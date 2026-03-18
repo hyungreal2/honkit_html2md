@@ -9,3 +9,15 @@ build/
 .mypy_cache/
 output/
 src/
+
+# HonKit build output
+_book/
+
+# Editor / AI tool settings
+.claude/
+.cursor/
+.vscode/
+.idea/
+*.swp
+*.swo
+CLAUDE.md
