@@ -7,10 +7,10 @@ No access to the original `.md` sources is required — everything is derived fr
 ## How it works
 
 ```
-_book/index.html          →  BookCrawler   →  ordered list of pages
-_book/<chapter>/index.html →  HTMLExtractor →  clean content HTML
+_book/index.html           →  BookCrawler    →  ordered list of pages
+_book/<chapter>/index.html →  HTMLExtractor  →  clean content HTML
                            →  HTMLToMarkdown →  Confluence Markdown
-                           →  OutputWriter  →  output/<chapter>.md
+                           →  OutputWriter   →  output/<chapter>.md
 ```
 
 | Module | Responsibility |
@@ -34,22 +34,39 @@ _book/<chapter>/index.html →  HTMLExtractor →  clean content HTML
 | `<html><head></head><body>` wrapper | transparent |
 | Table without `<th>` | empty header row added for Confluence compatibility |
 
-## Requirements
+## Installation
 
-- Python 3.10+
-- `beautifulsoup4`
-- `lxml`
+### Option 1 — Standalone binary (no Python required)
 
-## Setup
+A pre-built Linux x86_64 binary is included in the repository:
+
+```bash
+chmod +x bin/doc2md
+./bin/doc2md <book_dir> [output_dir]
+```
+
+Or copy it to your PATH:
+
+```bash
+sudo cp bin/doc2md /usr/local/bin/
+doc2md <book_dir> [output_dir]
+```
+
+### Option 2 — Install as Python package
+
+Requires Python 3.10+.
 
 ```bash
 pip install -r requirements.txt
+pip install -e .
 ```
+
+This installs a `doc2md` command into your Python environment.
 
 ## Usage
 
 ```bash
-python -m src.main <book_dir> [output_dir]
+doc2md <book_dir> [output_dir]
 ```
 
 | Argument | Description | Default |
@@ -60,10 +77,8 @@ python -m src.main <book_dir> [output_dir]
 ### Example
 
 ```bash
-python -m src.main _book output
+doc2md _book output
 ```
-
-Output:
 
 ```
 [doc2md] Book dir : _book
@@ -92,7 +107,11 @@ pytest tests/ -v
 
 ```
 doc2md/
-├── src/
+├── bin/
+│   └── doc2md              (standalone binary, Linux x86_64)
+├── doc2md/
+│   ├── __init__.py
+│   ├── __main__.py
 │   ├── book_crawler.py
 │   ├── html_extractor.py
 │   ├── html_to_md.py
@@ -105,9 +124,9 @@ doc2md/
 │   ├── test_book_crawler.py
 │   ├── test_html_extractor.py
 │   └── test_html_to_md.py
+├── pyproject.toml
 ├── requirements.txt
-├── README.md
-└── CLAUDE.md
+└── README.md
 ```
 
 ## Limitations
@@ -116,3 +135,4 @@ doc2md/
 - Internal cross-page links (e.g. `../administration/`) are preserved as-is and will need manual adjustment after importing to Confluence.
 - Glossary term tooltips are dropped (only the visible text is kept).
 - Nested ordered list sub-items written as raw text in the original (e.g. `3.1 ...`) remain as text since they have no semantic list markup in the HTML.
+- The standalone binary targets Linux x86_64. For other platforms, use the Python package installation.
