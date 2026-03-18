@@ -10,6 +10,11 @@ build/
 output/
 src/
 
+# PyInstaller temp output (binary goes in bin/ instead)
+dist/
+build/
+*.spec
+
 # HonKit build output
 _book/
 
